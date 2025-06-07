@@ -6,12 +6,8 @@ date:{
     type: Object,
     required: true
 },
-type:{
+description:{
     type: String,
-    required: true
-},
-time:{
-    type: Object,
     required: true
 },
 babyid:{

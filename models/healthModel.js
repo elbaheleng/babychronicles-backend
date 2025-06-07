@@ -6,6 +6,10 @@ date:{
     type: Object,
     required: true
 },
+time:{
+    type: Object,
+    required: true
+},
 type:{
     type: String,
     required: true
