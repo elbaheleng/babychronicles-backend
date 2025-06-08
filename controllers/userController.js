@@ -567,8 +567,8 @@ exports.makePaymentController = async (req, res) => {
             payment_method_types: ['card'], //purchased using card
             line_items: line_item, // details of produt that is being purchased
             mode: "payment",//make payment  or subscription or setup
-            success_url: `http://localhost:5173/payment_success/${productDetails._id}`,//url to be shown if payment is successful
-            cancel_url: 'http://localhost:5173/payment_error'//url to be shown if payment is failed
+            success_url: `https://babychronicles-frontend.vercel.app/payment_success/${productDetails._id}`,//url to be shown if payment is successful
+            cancel_url: 'https://babychronicles-frontend.vercel.app/payment_error'//url to be shown if payment is failed
         });
         
         res.status(200).json({sessionId:session.id })
