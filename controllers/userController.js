@@ -14,23 +14,26 @@ const pumpings = require("../models/pumpingModel");
 const photos = require("../models/photoModel");
 const products = require("../models/productModel");
 const stripe = require('stripe')(process.env.STRIPEKEY);
+const bcrypt = require('bcrypt');
+
 
 
 
 //register
 exports.registerController = async (req, res) => {
     const { fullname, email, password, dob, gender, name } = req.body
-    //console.log(fullname, email, password);
     try {
         const existingUser = await users.findOne({ email })// only email because key and value same
         if (existingUser) {
-            res.status(409).json('Already user exist')
+            res.status(409).json('User already exist')
         } else {
+            const hashed = await bcrypt.hash(password, 10)
             const newUser = new users({// key and value same, so written only one, newUser is ready in server
                 fullname,
                 email,
-                password,
+                password: hashed
             })
+            
             await newUser.save()// newUser is added to mongoDB
             const newBaby = new babies({
                 dob,
@@ -54,8 +57,9 @@ exports.loginController = async (req, res) => {
     try {
         const existingUser = await users.findOne({ email })// only email because key and value same
         if (existingUser) {
-            if (existingUser.password == password) {
-                const token = jwt.sign({ userMail: existingUser.email }, 'secretkey')
+            const existingpassword = await bcrypt.compare(password, existingUser.password)
+            if(existingpassword){
+                const token = jwt.sign({ userMail: existingUser.email }, process.env.SECRETKEY)
                 res.status(200).json({ existingUser, token })
             } else {
                 res.status(401).json("Incorrect email or password") // password doesnot match
@@ -71,7 +75,11 @@ exports.loginController = async (req, res) => {
 
 //get all babies added by user
 exports.getAllBabiesController = async (req, res) => {
+    console.log("inside controller");
+    
     const email = req.payload
+    console.log(email);
+    
     try {
         const allbabies = await babies.find({ userMail: email })
         res.status(200).json(allbabies)
