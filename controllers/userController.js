@@ -504,7 +504,7 @@ exports.addPhotoController = async (req, res) => {
             res.status(401).json('You have already added a photo with the same filename.')
         } else {
             const newPhoto = new photos({
-                title, description, date, babyid, photo
+                title, description, date: new Date(date), babyid, photo
             })
             await newPhoto.save()
             res.status(200).json(newPhoto)
